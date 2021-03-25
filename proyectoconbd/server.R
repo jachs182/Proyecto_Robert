@@ -6,9 +6,9 @@ serverfun <- function(input, output){
     
     mydata <- reactive({
         #conexion con la bd
-        conn <- odbcConnect("PRoyectoRStudio", uid="sa", pwd="")
+        conn <- odbcConnect("encuesta", uid="root", pwd="1234")
         #consulta a las columnas
-        qr <- sqlQuery(conn, "select ID from [dbo].[peticion_ID]")
+        qr <- sqlFetch(conn, "que_dificultades")
     })
     
     output$tbtable <- renderTable({
@@ -25,16 +25,18 @@ serverfun <- function(input, output){
         if(is.null(mydata())){
             return()
         }
-        barplot(table(mydata()))
+        barplot(table(mydata()),
+                main = "¿Que dificultades se te han presentado con la nueva modalidad de clases ?",
+                xlab = "Preguntas",
+                ylab = "Total Respuestas")
         
     })
     
     Datos <- reactive({
         #abrir conexion con la bd
-        conns <- dbConnect("encuesta",
-                              uid = "sa", pwd = "")
+        conns <- dbConnect("encuesta", uid="root", pwd="1234")
         #consulta a query
-        qr <- sqlQuery(conns,"select * from[dbo].[peticion_ID]" )
+        qr <- sqlQuery(conns,"select * from[dbo].[Respuestas]" )
         
     })
     

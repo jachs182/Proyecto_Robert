@@ -20,7 +20,9 @@ shinyUI(
         mainPanel(
             tabsetPanel(
                 tabPanel("Data", tableOutput("tbTable")),
-                tabPanel("BARRAS" , plotOutput("grafico1")),
+                tabPanel("BARRAS" , 
+                         titlePanel("Dificultades"),
+                         plotOutput("grafico1")),
                 tabPanel("Grafico 3", tableOutput("tbTables"))
                 
             )
