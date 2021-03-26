@@ -13,7 +13,7 @@ library(shiny)
 shinyUI(
 
     pageWithSidebar(
-        headerPanel("Conectanod con MYSQL Server con R-studio-shinny"),
+        headerPanel("Conectando con SQL Server con R-studio-shinny"),
         sidebarPanel(
             selectInput("variable", "Tabla a buscar:",
                         c("Cual es tu nivel" = "select Cuál_es_tu_nivel from [dbo].[cual_es_tu_nivel$]",
@@ -26,7 +26,7 @@ shinyUI(
                 tabPanel("BARRAS" , 
                          titlePanel("Dificultades"),
                          plotOutput("grafico1")),
-                tabPanel("Grafico 3", plotOutput("grafico")),
+                tabPanel("Grafica de Pastel", plotOutput("grafico")),
                 tabPanel("Histograma", plotOutput("histo"))
                
             
