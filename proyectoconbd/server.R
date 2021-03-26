@@ -1,6 +1,7 @@
 library(shiny)
 library(RODBC)
 library(RMySQL)
+library(graphics)
 
 serverfun <- function(input, output){
     
@@ -8,8 +9,14 @@ serverfun <- function(input, output){
         #conexion con la bd
         conn <- odbcConnect("encuesta", uid="root", pwd="1234")
         #consulta a las columnas
-        qr <- sqlFetch(conn, "que_dificultades")
+        #qr <- sqlFetch(conn,"que_dificultades$")
+        qr <- sqlQuery(conn, "select Cuál_es_tu_nivel from [dbo].[cual_es_tu_nivel$]")
+        te <- input$variable
+        qr <- sqlQuery(conn, te)
+
     })
+    
+
     
     output$tbtable <- renderTable({
         #revisar si la tabla no esta vacia
@@ -19,38 +26,72 @@ serverfun <- function(input, output){
         mydata()
     })
     
-    output$grafico1 <-renderPlot({
+    
+    ################## primera grafica de barras ################33
+    output$grafico1 <- renderPlot({
         
         #revisar si la mydata no esta vacia
         if(is.null(mydata())){
             return()
         }
-        barplot(table(mydata()),
-                main = "¿Que dificultades se te han presentado con la nueva modalidad de clases ?",
-                xlab = "Preguntas",
-                ylab = "Total Respuestas")
+        
+         barplot(table(mydata()),
+                 main = "¿Que dificultades se te han presentado con la nueva modalidad de clases ?",
+                 xlab = "Preguntas",
+                 ylab = "Total Respuestas")
+         
+        #hist(table(mydata()) )
+    })
+    
+    ################grafica de pastel ##############################
+    
+    data_table3 <- reactive({
+        conn2 <- odbcConnect("encuesta", uid="root", pwd="1234")
+        
+        te2 <- input$variable
+        qr2 <- sqlQuery(conn2, te2)
         
     })
     
-    Datos <- reactive({
-        #abrir conexion con la bd
-        conns <- dbConnect("encuesta", uid="root", pwd="1234")
-        #consulta a query
-        qr <- sqlQuery(conns,"select * from[dbo].[Respuestas]" )
+    output$grafico <- renderPlot({
         
-    })
-    
-    output$tbtables <- renderPlot({
-        if(is.null(Datos())){
+        #revisar si la mydata no esta vacia
+        if(is.null(data_table3())){
             return()
         }
-        Datos()
+        
+        #hist(table(data_table3()) )
+        pie(table(data_table3()), clockwise = TRUE, main = "Grafica Pastel"  )
     })
     
-    output$grafico2 <- renderPlot({
-        if(is.null(Datos())){
+    
+    #############################Histograma###################33
+    
+    data_table4 <- reactive({
+        conn3 <- odbcConnect("encuesta", uid="root", pwd="1234")
+
+        te3 <- input$variable
+        qr3 <- sqlQuery(conn3, te3)
+
+    })
+
+    output$tabla_his <- renderTable({
+        #revisar si la tabla no esta vacia
+        if(is.null(data_table4())){
             return()
         }
-        barplot(table(Datos()))
+        data_table4()
     })
+
+    output$histo <- renderPlot({
+
+        #revisar si la mydata no esta vacia
+        if(is.null(data_table4())){
+            return()
+        }
+
+        hist(table(data_table4()) ) #funcion para hacer histograma
+        #pie(table(data_table4()), clockwise = TRUE, main = "Grafica Pastel"  )
+    })
+    
 }

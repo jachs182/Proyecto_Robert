@@ -15,19 +15,24 @@ shinyUI(
     pageWithSidebar(
         headerPanel("Conectanod con MYSQL Server con R-studio-shinny"),
         sidebarPanel(
-            textInput("Id", "Enter ID bellow", "Encuesta UT")
+            selectInput("variable", "Tabla a buscar:",
+                        c("Cual es tu nivel" = "select Cuál_es_tu_nivel from [dbo].[cual_es_tu_nivel$]",
+                          "Que cambiarias" = "select Qué_cambiarías from [dbo].[que_cambiarias$]",
+                          "Que dificultades" = "select Qué_dificultades from [dbo].[que_dificultades$]",
+                          "Te sientes Stidfecho" = "select Te_sientes_satisfecho from [dbo].[te_sientes_satisfecho$]"))
         ),
         mainPanel(
             tabsetPanel(
-                tabPanel("Data", tableOutput("tbTable")),
                 tabPanel("BARRAS" , 
                          titlePanel("Dificultades"),
                          plotOutput("grafico1")),
-                tabPanel("Grafico 3", tableOutput("tbTables"))
-                
-            )
+                tabPanel("Grafico 3", plotOutput("grafico")),
+                tabPanel("Histograma", plotOutput("histo"))
+               
+            
         )
         
     )
     
+)
 )
